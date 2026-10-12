@@ -1,0 +1,24 @@
+[01:21] INFO: Valid header in returns_agadir.csv
+[01:21] INFO: Valid header in returns_casa.csv
+[01:21] INFO: header fixed in returns_tanger.csv
+[01:21] INFO: job started
+[01:21] INFO: reading incoming/sales_agadir.csv
+[01:21] INFO: sales sum 1782.00
+[01:21] INFO: archived as sales_agadir_2026-10-12.csv
+[01:21] INFO: job finished
+[01:21] INFO: job started
+[01:21] INFO: reading incoming/sales_casa.csv
+[01:21] INFO: sales sum 3058.50
+[01:21] INFO: archived as sales_casa_2026-10-12.csv
+[01:21] INFO: job finished
+[01:21] ERROR: missing column 'unit_price' in sales_tanger.csv
+[01:21] INFO: job finished
+[01:21] INFO: returns processing started
+[01:21] INFO: reading input/returns_agadir.csv
+[01:21] INFO: returns processing finished
+[01:21] INFO: returns processing started
+[01:21] INFO: reading input/returns_casa.csv
+[01:21] INFO: returns processing finished
+[01:21] INFO: returns processing started
+[01:21] INFO: reading input/returns_tanger.csv
+[01:21] INFO: returns processing finished

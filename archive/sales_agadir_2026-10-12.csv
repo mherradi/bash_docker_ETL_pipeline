@@ -1,0 +1,14 @@
+order_id,product_name,quantity,unit_price,city
+1,The Sinya,8,30.00,Agadir
+2,Huile d'olive,4,80.00,Agadir
+3,Olives noires,6,22.00,Agadir
+4,Olives vertes,5,18.00,Agadir
+5,Oranges,25,5.00,Agadir
+6,Citrons,15,6.00,Agadir
+7,Menthe fraiche,20,3.00,Agadir
+8,Epices Ras el Hanout,10,15.00,Agadir
+9,Riz,12,9.00,Agadir
+10,Lentilles,9,11.00,Agadir
+11,Pois chiches,7,13.00,Agadir
+12,Tomates,30,5.50,Agadir
+13,Pommes de terre,28,4.00,Agadir

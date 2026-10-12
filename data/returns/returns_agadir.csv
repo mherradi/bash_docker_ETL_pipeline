@@ -1,0 +1,34 @@
+return_id,product_name,reason,city
+1,Oranges,changed_mind,Agadir
+2,Sardines en boite,changed_mind,Agadir
+3,Citrons,wrong_item,Agadir
+4,Citrons,wrong_item,Agadir
+5,Sel,defective,Agadir
+6,Semoule,changed_mind,Agadir
+7,Olives noires,defective,Agadir
+8,Oignons,defective,Agadir
+9,Couscous,defective,Agadir
+10,Lentilles,defective,Agadir
+11,Pain,changed_mind,Agadir
+12,Beurre,changed_mind,Agadir
+13,Huile d'argan,wrong_item,Agadir
+14,Lait,changed_mind,Agadir
+15,Oeufs,changed_mind,Agadir
+16,Sardines en boite,changed_mind,Agadir
+17,The Sinya,changed_mind,Agadir
+18,Pommes de terre,defective,Agadir
+19,Pois chiches,changed_mind,Agadir
+20,Oignons,wrong_item,Agadir
+21,Oignons,changed_mind,Agadir
+22,Sucre,defective,Agadir
+23,Farine,wrong_item,Agadir
+24,Dattes Majhoul,wrong_item,Agadir
+25,The Sinya,changed_mind,Agadir
+26,Pommes de terre,wrong_item,Agadir
+27,Olives vertes,defective,Agadir
+28,Olives vertes,defective,Agadir
+29,Lentilles,wrong_item,Agadir
+30,Lentilles,changed_mind,Agadir
+31,Riz,defective,Agadir
+32,Semoule,wrong_item,Agadir
+33,Oignons,defective,Agadir

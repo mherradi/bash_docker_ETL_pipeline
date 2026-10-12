@@ -1,0 +1,17 @@
+order_id,product_name,quantity,price,city
+1,The Sinya,12,35.00,Tanger
+2,Huile d'olive,6,78.00,Tanger
+3,Couscous,10,11.50,Tanger
+4,Semoule,8,9.00,Tanger
+5,Dattes Majhoul,5,58.00,Tanger
+6,Miel,4,95.00,Tanger
+7,Farine,14,6.50,Tanger
+8,Sucre,16,8.00,Tanger
+9,Sel,20,3.50,Tanger
+10,Lait,22,8.00,Tanger
+11,Beurre,10,21.00,Tanger
+12,Oeufs,24,2.20,Tanger
+13,Pain,40,2.00,Tanger
+14,Riz,15,9.50,Tanger
+15,Lentilles,11,12.00,Tanger
+16,Oignons,25,4.50,Tanger

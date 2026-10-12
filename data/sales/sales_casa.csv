@@ -1,0 +1,16 @@
+order_id,product_name,quantity,unit_price,city
+1,The Sinya,10,32.00,Casablanca
+2,Huile d'olive,5,75.50,Casablanca
+3,Huile d'argan,3,145.00,Casablanca
+4,Couscous,8,12.00,Casablanca
+5,Semoule,6,9.50,Casablanca
+6,Dattes Majhoul,4,55.00,Casablanca
+7,Amandes,7,68.00,Casablanca
+8,Miel,3,90.00,Casablanca
+9,Sardines en boite,20,7.50,Casablanca
+10,Farine,10,6.00,Casablanca
+11,Sucre,12,8.50,Casablanca
+12,Sel,15,4.00,Casablanca
+13,Lait,25,7.80,Casablanca
+14,Beurre,9,20.00,Casablanca
+15,Oeufs,30,2.00,Casablanca

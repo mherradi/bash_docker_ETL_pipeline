@@ -1,0 +1,34 @@
+return_id,product_name,category,city
+1,Amandes,changed_mind,Tanger
+2,Huile d'argan,defective,Tanger
+3,Pois chiches,defective,Tanger
+4,Oignons,wrong_item,Tanger
+5,Huile d'argan,defective,Tanger
+6,Couscous,wrong_item,Tanger
+7,Sardines en boite,wrong_item,Tanger
+8,Lentilles,wrong_item,Tanger
+9,Dattes Majhoul,wrong_item,Tanger
+10,Sel,defective,Tanger
+11,Pois chiches,wrong_item,Tanger
+12,Tomates,changed_mind,Tanger
+13,Lentilles,defective,Tanger
+14,Riz,changed_mind,Tanger
+15,Dattes Majhoul,changed_mind,Tanger
+16,Pommes de terre,defective,Tanger
+17,Dattes Majhoul,wrong_item,Tanger
+18,Lait,wrong_item,Tanger
+19,Lentilles,changed_mind,Tanger
+20,Oranges,defective,Tanger
+21,Pois chiches,wrong_item,Tanger
+22,Oignons,defective,Tanger
+23,Miel,defective,Tanger
+24,Pain,wrong_item,Tanger
+25,Lait,wrong_item,Tanger
+26,Huile d'argan,defective,Tanger
+27,Citrons,changed_mind,Tanger
+28,Sucre,defective,Tanger
+29,Lentilles,wrong_item,Tanger
+30,Lait,changed_mind,Tanger
+31,Oeufs,defective,Tanger
+32,Sardines en boite,defective,Tanger
+33,Miel,changed_mind,Tanger

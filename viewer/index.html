@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Data Viewer</title>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<style>
+  :root {
+    --ink: #1c1f26;
+    --paper: #fafaf8;
+    --line: #dcdad3;
+    --accent: #2f5d50;
+    --accent-soft: #e8efec;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  header {
+    max-width: 960px;
+    margin: 0 auto 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 0.9rem;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+
+  .header-tools { display: flex; gap: 0.5rem; align-items: center; }
+
+  select, input[type="text"], button {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.35rem 0.6rem;
+  }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+
+  .toolbar {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+  .toolbar input[type="text"] { min-width: 14rem; }
+  .toolbar label { color: #6b6f76; display: flex; align-items: center; gap: 0.3rem; }
+
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  #status {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: #6b6f76;
+    margin-bottom: 1rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+
+  thead th {
+    text-align: left;
+    background: var(--accent);
+    color: var(--paper);
+    font-weight: 600;
+    padding: 0.65rem 0.9rem;
+    position: sticky;
+    top: 0;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  thead th:hover { background: #264c41; }
+
+  thead th::after {
+    content: "";
+    opacity: 0.5;
+    margin-left: 0.35rem;
+    font-size: 0.75em;
+  }
+
+  thead th.sort-asc::after { content: "↑"; opacity: 1; }
+  thead th.sort-desc::after { content: "↓"; opacity: 1; }
+
+  tbody td {
+    padding: 0.55rem 0.9rem;
+    border-top: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  tbody tr:nth-child(even) { background: var(--accent-soft); }
+  tbody tr:hover { background: #dbe6e1; }
+
+  td.numeric, th.numeric { text-align: right; font-family: var(--mono); }
+
+  #empty, #error {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    padding: 2rem;
+    text-align: center;
+    color: #6b6f76;
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+  }
+
+  #error { color: #a23b2e; border-color: #e3b6ac; }
+
+  footer {
+    max-width: 960px;
+    margin: 2rem auto 0;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: #9a9da3;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Data Viewer</h1>
+  <div class="header-tools">
+    <select id="file-select"></select>
+    <button id="refresh-btn" title="Reload the file list and the current file">refresh</button>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar" id="filter-bar">
+    <span>filter</span>
+    <select id="filter-col"></select>
+    <input type="text" id="filter-text" placeholder="contains… (e.g. Tanger)">
+    <button id="filter-clear">clear</button>
+    <label><input type="checkbox" id="auto-refresh" checked> auto-refresh 10 s</label>
+  </div>
+  <div id="status"></div>
+  <div id="table-container"></div>
+</main>
+
+<footer>reports read from ./result and ./output — click a column header to sort, use the filter to narrow rows</footer>
+
+<script>
+// List CSV files in both report folders; nginx serves each folder as JSON.
+const REPORT_DIRS = ["result/", "output/"];
+
+const statusEl = document.getElementById("status");
+const containerEl = document.getElementById("table-container");
+const selectEl = document.getElementById("file-select");
+const filterBar = document.getElementById("filter-bar");
+const filterCol = document.getElementById("filter-col");
+const filterTxt = document.getElementById("filter-text");
+
+let allRows = [];          // every row of the current file
+let currentHeaders = [];
+let currentFile = null;
+let sortState = { col: null, dir: 1 };
+
+function escapeHtml(v) {
+  return String(v ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+function isNumeric(val) {
+  return val !== "" && !isNaN(val) && !isNaN(parseFloat(val));
+}
+
+async function listFiles() {
+  const lists = await Promise.all(REPORT_DIRS.map(async dir => {
+    const res = await fetch(dir, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status} on ${dir}`);
+    const entries = await res.json();
+    return entries
+      .filter(e => e.type === "file" && e.name.toLowerCase().endsWith(".csv"))
+      .map(e => ({ path: dir + e.name, label: dir + e.name }));
+  }));
+  return lists.flat().sort((a, b) => a.label.localeCompare(b.label));
+}
+
+// filter first, then sort
+function currentView() {
+  const col = filterCol.value;                  // "" = all columns
+  const needle = filterTxt.value.trim().toLowerCase();
+
+  let rows = allRows;
+  if (needle) {
+    rows = rows.filter(row => {
+      const hay = col ? [row[col]] : currentHeaders.map(h => row[h]);
+      return hay.some(v => String(v ?? "").toLowerCase().includes(needle));
+    });
+  }
+
+  if (sortState.col) {
+    const numeric = rows.every(r => isNumeric(r[sortState.col]) || r[sortState.col] === "");
+    rows = [...rows].sort((a, b) => {
+      let av = a[sortState.col], bv = b[sortState.col];
+      if (numeric) { av = parseFloat(av) || 0; bv = parseFloat(bv) || 0; }
+      if (av < bv) return -1 * sortState.dir;
+      if (av > bv) return 1 * sortState.dir;
+      return 0;
+    });
+  }
+  return rows;
+}
+
+function render() {
+  const rows = currentView();
+  const filtered = rows.length !== allRows.length;
+  statusEl.textContent = `${currentFile} — ${filtered ? rows.length + " of " : ""}${allRows.length} rows, ${currentHeaders.length} columns`;
+
+  if (!rows.length) {
+    containerEl.innerHTML = `<div id="empty">${allRows.length ? "No row matches the filter." : "This file has no rows."}</div>`;
+    return;
+  }
+
+  const numericCols = currentHeaders.filter(h => allRows.every(r => isNumeric(r[h]) || r[h] === ""));
+
+  let html = '<div class="table-wrap"><table><thead><tr>';
+  currentHeaders.forEach(h => {
+    const cls = [numericCols.includes(h) ? "numeric" : "",
+                 sortState.col === h ? (sortState.dir === 1 ? "sort-asc" : "sort-desc") : ""].join(" ");
+    html += `<th class="${cls}" data-col="${escapeHtml(h)}">${escapeHtml(h)}</th>`;
+  });
+  html += "</tr></thead><tbody>";
+  rows.forEach(row => {
+    html += "<tr>";
+    currentHeaders.forEach(h => {
+      html += `<td class="${numericCols.includes(h) ? "numeric" : ""}">${escapeHtml(row[h])}</td>`;
+    });
+    html += "</tr>";
+  });
+  html += "</tbody></table></div>";
+  containerEl.innerHTML = html;
+
+  document.querySelectorAll("thead th").forEach(th => {
+    th.addEventListener("click", () => {
+      const col = th.dataset.col;
+      if (sortState.col === col) sortState.dir *= -1; else sortState = { col, dir: 1 };
+      render();
+    });
+  });
+}
+
+function fillFilterColumns() {
+  const previous = filterCol.value;
+  filterCol.innerHTML = '<option value="">all columns</option>' +
+    currentHeaders.map(h => `<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`).join("");
+  if (currentHeaders.includes(previous)) filterCol.value = previous;   // keep the choice across refreshes
+}
+
+async function loadFile(name) {
+  currentFile = name;
+  try {
+    const path = name.split("/").map(encodeURIComponent).join("/");
+    const res = await fetch(path, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const parsed = Papa.parse(await res.text(), { header: true, skipEmptyLines: true });
+    currentHeaders = parsed.meta.fields || [];
+    allRows = parsed.data;
+    fillFilterColumns();
+    filterBar.style.display = "flex";
+    render();
+  } catch (err) {
+    containerEl.innerHTML = `<div id="error">Could not load ${escapeHtml(name)}: ${escapeHtml(err.message)}</div>`;
+    statusEl.textContent = "";
+  }
+}
+
+function showMessage(html, kind) {
+  selectEl.style.display = "none";
+  filterBar.style.display = "none";
+  statusEl.textContent = "";
+  containerEl.innerHTML = `<div id="${kind}">${html}</div>`;
+}
+
+async function refreshList(keepSelection) {
+  let files;
+  try {
+    files = await listFiles();
+  } catch (err) {
+    showMessage(`Cannot read the report folders: ${escapeHtml(err.message)}`, "error");
+    return;
+  }
+
+  if (!files.length) {
+    showMessage("No CSV reports found in ./result or ./output yet.<br>Run the processor, then click refresh.", "empty");
+    return;
+  }
+
+  const wanted = keepSelection && files.some(f => f.path === currentFile) ? currentFile : files[0].path;
+  selectEl.innerHTML = files.map(f => `<option value="${escapeHtml(f.path)}">${escapeHtml(f.label)}</option>`).join("");
+  selectEl.value = wanted;
+  selectEl.style.display = "";
+  await loadFile(wanted);
+}
+
+selectEl.addEventListener("change", () => { sortState = { col: null, dir: 1 }; loadFile(selectEl.value); });
+filterCol.addEventListener("change", render);
+filterTxt.addEventListener("input", render);
+document.getElementById("filter-clear").addEventListener("click", () => { filterTxt.value = ""; filterCol.value = ""; render(); });
+document.getElementById("refresh-btn").addEventListener("click", () => refreshList(true));
+
+// the processor runs every 10 s, so poll the folder too (filter and sort are kept)
+setInterval(() => {
+  if (document.getElementById("auto-refresh").checked) refreshList(true);
+}, 10000);
+
+statusEl.textContent = "reading ./result …";
+refreshList(false);
+</script>
+
+</body>
+</html>

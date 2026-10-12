@@ -1,0 +1,35 @@
+return_id,product_name,reason,city
+1,Lentilles,defective,Casablanca
+2,The Sinya,changed_mind,Casablanca
+3,Sardines en boite,defective,Casablanca
+4,Miel,defective,Casablanca
+5,Pommes de terre,defective,Casablanca
+6,Pois chiches,changed_mind,Casablanca
+7,Oranges,defective,Casablanca
+8,Citrons,wrong_item,Casablanca
+9,Huile d'olive,defective,Casablanca
+10,Huile d'argan,defective,Casablanca
+11,Miel,changed_mind,Casablanca
+12,Riz,defective,Casablanca
+13,Oranges,defective,Casablanca
+14,Tomates,changed_mind,Casablanca
+15,Tomates,changed_mind,Casablanca
+16,Beurre,defective,Casablanca
+17,Oeufs,changed_mind,Casablanca
+18,Sardines en boite,defective,Casablanca
+19,Oignons,defective,Casablanca
+20,Tomates,wrong_item,Casablanca
+21,Sucre,wrong_item,Casablanca
+22,Semoule,defective,Casablanca
+23,Oignons,wrong_item,Casablanca
+24,Couscous,defective,Casablanca
+25,Lait,defective,Casablanca
+26,Sel,wrong_item,Casablanca
+27,Riz,wrong_item,Casablanca
+28,Pain,defective,Casablanca
+29,Pommes de terre,wrong_item,Casablanca
+30,Oranges,defective,Casablanca
+31,Lait,defective,Casablanca
+32,Oranges,wrong_item,Casablanca
+33,Lentilles,changed_mind,Casablanca
+34,Sel,changed_mind,Casablanca
