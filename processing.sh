@@ -24,10 +24,6 @@ log() {
 }
 
 
-
-
-
-
 # Processing temporary and junk files.
 # ========================================================================================================================
 
@@ -95,12 +91,7 @@ process_file(){
     fi
     
     log "[$(date +%H:%M)] INFO: job finished"
-    
-    
-
-    
-
-}
+ }
 
 
 process_returns(){
