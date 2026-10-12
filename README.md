@@ -15,8 +15,6 @@
 ![Automation](https://img.shields.io/badge/Processing-Automated-orange?style=flat)
 
 &nbsp;
-
-&nbsp;
 ## Architecture Overview
 This project models a simple ETL architecture (Extract, Transform, Load) workflow:
 &nbsp;
